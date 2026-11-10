@@ -4,6 +4,8 @@ A tiny MCP server that only answers requests carrying an API key. Use it to chec
 
 A lot of self-hosted MCP servers are protected by a static API key in a header, while some MCP clients only offer OAuth or no auth. This server makes it easy to see what actually arrives.
 
+![A request without a key gets 401, a request with X-API-Key gets through](docs/demo.gif)
+
 ## What it does
 
 - Listens on `http://localhost:8765/mcp`, stateless Streamable HTTP.
@@ -56,4 +58,13 @@ ChatGPT's "Add custom MCP server" dialog only offers OAuth or no auth, so it can
 
 If the server log shows `key via: X-API-Key -> ALLOWED` and ChatGPT gets the pong back, the key made it through.
 
-**Result:** _not tested yet._
+**Result: works.** Tested on Nov 10, 2026 with tunnel-client v0.0.20. ChatGPT listed the tunnel, connected with No authentication, and every request it made reached the server with `X-API-Key` and was allowed:
+
+```
+[20:44:25] POST /mcp  key via: X-API-Key              -> ALLOWED
+[20:44:26] POST /mcp  key via: X-API-Key              -> ALLOWED
+```
+
+![ChatGPT calling ping through the tunnel and getting the pong back](docs/chatgpt-ping.png)
+
+Two Windows notes from setting it up: run `tunnel-client init` from the same shell you'll run it from (Git Bash and PowerShell use different default profile folders), or set `TUNNEL_CLIENT_PROFILE_DIR`. The profile's `api_key` can be `file:C:/path/to/key` so the OpenAI key never sits in your shell history.
